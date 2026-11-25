@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="국립군산대학교 통합정보시스템 로그인">
+<title>로그인 · 국립군산대학교</title>
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/login.js"></script>
+</head>
+<body class="login-page">
+<main aria-labelledby="login-title">
+<div class="login-brand">
+<img src="img/kunsan-logo-round.png" alt="국립군산대학교 로고" width="60" height="60">
+<p>국립군산대학교<br><small>통합정보시스템 · 모바일</small></p>
+</div>
+<div class="login-card">
+<span class="login-kicker">WELCOME TO MY CAMPUS</span>
+<h1 id="login-title">로그인</h1>
+<p class="login-intro">로그인하고 나의 캠퍼스를 만나보세요.</p>
+<form id="login-form" novalidate>
+<label for="login-id">ID</label>
+<input id="login-id" name="demo_id" placeholder="ID를 입력하세요" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+<label for="login-password">비밀번호</label>
+<div class="password-wrap">
+<input id="login-password" name="demo_password" type="password" placeholder="비밀번호를 입력하세요" autocomplete="off" required>
+<button id="password-toggle" type="button" aria-label="비밀번호 표시" aria-pressed="false">보기</button>
+</div>
+<label class="remember-row" for="remember-id"><input id="remember-id" type="checkbox">ID 저장</label>
+<p id="login-error" role="alert"></p>
+<button class="login-submit" type="submit">로그인 →</button>
+</form>
+</div>
+<p class="login-bottom">BLUE CAMPUS, BRIGHTER TOMORROW</p>
+</main>
+</body>
+</html>
