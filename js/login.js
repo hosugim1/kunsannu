@@ -8,7 +8,7 @@ const real = window.auth && window.auth.enabled;
 if (real) {
     document.querySelector('label[for=login-id]').textContent = '전자우편';
     idInput.type = 'email'; idInput.autocomplete = 'email'; idInput.placeholder = '전자우편을 입력하세요';
-    $('signup-fields').hidden = $('signup').hidden = false;
+    $('signup').hidden = false;
 }
 
 form.addEventListener('submit', async event => {
@@ -20,23 +20,9 @@ form.addEventListener('submit', async event => {
         if (err) return say('전자우편, 비밀번호, 메일 확인 상태를 점검하세요.');
         try { enter(await auth.profileName(data.user)); } catch (e) { say('프로필 읽기 실패: ' + e.message); }
     } else {
-        // 학번 → 이름: students.js 표 → 이 브라우저에 기억한 이름 → 처음이면 이름을 물어봅니다.
-        let saved = {};
-        try { saved = JSON.parse(localStorage.getItem('campus-student-names') || '{}'); } catch (e) {}
-        const pick = o => (o && Object.hasOwn(o, id) ? o[id] : '');
-        let name = pick(window.STUDENT_NAMES) || pick(saved);
-        if (!name) {
-            const typed = $('display-name').value.trim();
-            if ($('signup-fields').hidden) {
-                $('signup-fields').hidden = false;
-                document.querySelector('label[for=display-name]').textContent = '이름';
-                $('display-name').focus();
-                return say('처음 접속한 학번입니다. 이름을 입력하고 다시 로그인하세요.');
-            }
-            if (typed.length < 2 || typed.length > 30) return say('이름을 2~30자로 입력하세요.');
-            name = typed;
-            try { saved[id] = name; localStorage.setItem('campus-student-names', JSON.stringify(saved)); } catch (e) {}
-        }
+        // 표시 이름 = 학번. students.js 표에 이름을 적어 둔 학번만 그 이름으로 바꿔 보여줍니다.
+        const listed = window.STUDENT_NAMES && Object.hasOwn(window.STUDENT_NAMES, id) ? window.STUDENT_NAMES[id] : '';
+        const name = listed || id;
         password.value = '';
         enter(name);
     }
@@ -44,9 +30,10 @@ form.addEventListener('submit', async event => {
 });
 
 $('signup').addEventListener('click', async () => {
-    const name = $('display-name').value.trim();
-    if (name.length < 2 || name.length > 30) return say('표시 이름을 2~30자로 입력하세요.');
+    // 표시 이름은 따로 받지 않고 전자우편 @ 앞부분(학번 등)을 씁니다.
+    const name = idInput.value.trim().split('@')[0];
     if (!idInput.validity.valid || !idInput.value || password.value.length < 8) return say('전자우편과 8자 이상의 비밀번호를 확인하세요.');
+    if (name.length < 2 || name.length > 30) return say('전자우편 @ 앞부분은 2~30자여야 합니다.');
     const { error: err } = await auth.client.auth.signUp({
         email: idInput.value.trim(), password: password.value,
         options: { emailRedirectTo: location.href.split('#')[0], data: { display_name: name } }
